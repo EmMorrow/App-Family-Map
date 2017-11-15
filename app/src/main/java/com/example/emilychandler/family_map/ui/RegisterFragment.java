@@ -67,6 +67,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
         request.setPassword(password.getText().toString());
         request.setGender(genderS);
         register.execute(request);
+
+
     }
 
     @Override
