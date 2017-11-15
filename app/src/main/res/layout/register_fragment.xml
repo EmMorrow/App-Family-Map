@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context="com.example.emilychandler.family_map.ui.RegisterFragment">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/server_host"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Server Host"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/server_port"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Server Port" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Username" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="Password" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/first_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="First Name" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/last_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Last Name"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Email" />
+    </android.support.design.widget.TextInputLayout>
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/gender">
+
+        <RadioButton
+            android:id="@+id/female"
+            style="@android:style/Widget.Holo.CompoundButton.RadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Female"/>
+
+        <RadioButton
+            android:id="@+id/male"
+            style="@android:style/Widget.Holo.CompoundButton.RadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Male"/>
+
+    </RadioGroup>
+
+
+    <Button
+        android:id="@+id/register"
+        style="@android:style/Widget.DeviceDefault.Light.Button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/accent_material_light"
+        android:text="Register"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/sign_in"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:textColor="@color/hintColor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Already have an account? Sign in"/>
+
+
+
+</LinearLayout>

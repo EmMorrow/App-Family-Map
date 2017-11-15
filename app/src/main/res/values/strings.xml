@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Family-Map</string>
+    <string name="hint_server_host">Server Host</string>
+    <string name="text_size">16sp</string>
+</resources>
