@@ -37,6 +37,9 @@ public class LoginTask extends AsyncTask<LoginRequest, Integer, LoginResult>{
             Model m = Model.getInstance();
             m.setAuthToken(result.getAuthToken());
             Toast.makeText(context, "Login Successful", Toast.LENGTH_SHORT).show();
+
+            GetPeopleTask getPeople = new GetPeopleTask(context, serverHost, serverPort);
+            getPeople.execute(Model.getInstance().getAuthToken());
         }
     }
 }

@@ -120,12 +120,22 @@ public class ServerProxy {
         try {
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
-            if(header != null) http.setRequestProperty("Authorization",header);
+            if(method.equals("GET")) {
+                http.setDoOutput(false);
+                http.addRequestProperty("Authorization",header);
+            }
+//            if(header != null) {
+//                System.out.println("UGH");
+//                http.setRequestProperty("Authorization",header);
+//            }
             http.connect();
-
-            OutputStream reqBody = http.getOutputStream();
-            writeString(body, reqBody);
-            reqBody.close();
+            System.out.println("HERE " + method);
+            if (method.equals("POST")){
+                System.out.println("also");
+                OutputStream reqBody = http.getOutputStream();
+                writeString(body, reqBody);
+                reqBody.close();
+             }
 
             if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 System.out.println("Login Successful");
@@ -151,32 +161,7 @@ public class ServerProxy {
         }
         return null;
     }
-//    public String getUrl(URL url) {
-//        try {
-//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            conn.setRequestMethod("GET");
-//            conn.connect();
-//
-//            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-//                InputStream responseBody = conn.getInputStream();
-//
-//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                byte[] buffer = new byte[1024];
-//                int length = 0;
-//                while ((length = responseBody.read(buffer)) != -1) {
-//                    baos.write(buffer, 0, length);
-//                }
-//
-//                String responseBodyData = baos.toString();
-//                return responseBodyData;
-//            }
-//        }
-//        catch (Exception e) {
-//            Log.e("HttpClient",e.getMessage(),e);
-//        }
-//
-//        return null;
-//    }
+
     private static void writeString(String str, OutputStream os) throws IOException {
         OutputStreamWriter sw = new OutputStreamWriter(os);
         sw.write(str);

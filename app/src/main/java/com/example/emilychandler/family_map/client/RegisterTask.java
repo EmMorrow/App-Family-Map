@@ -36,6 +36,9 @@ public class RegisterTask extends AsyncTask<User, Integer, RegisterResult> {
             Model m = Model.getInstance();
             m.setAuthToken(result.getAuthToken());
             Toast.makeText(context, "Register Successful", Toast.LENGTH_SHORT).show();
+
+            GetPeopleTask getPeople = new GetPeopleTask(context, serverHost, serverPort);
+            getPeople.execute(Model.getInstance().getAuthToken());
         }
     }
 }

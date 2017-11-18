@@ -13,8 +13,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.emilychandler.family_map.R;
+import com.example.emilychandler.family_map.client.GetPeopleTask;
 import com.example.emilychandler.family_map.client.LoginTask;
 import com.example.emilychandler.family_map.data.LoginRequest;
+import com.example.emilychandler.family_map.data.Model;
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
     private Button signin, register;
@@ -41,6 +43,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         LoginTask login = new LoginTask(getActivity(), serverHost.getText().toString(), serverPort.getText().toString());
         LoginRequest request = new LoginRequest(username.getText().toString(), password.getText().toString());
         login.execute(request);
+
+//        GetPeopleTask getPeople = new GetPeopleTask(getActivity(), serverHost.getText().toString(), serverPort.getText().toString());
+//        getPeople.execute(Model.getInstance().getAuthToken());
     }
 
     @Override
