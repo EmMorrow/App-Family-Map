@@ -12,6 +12,9 @@ import com.example.emilychandler.family_map.data.Person;
 import com.example.emilychandler.family_map.data.PersonResult;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by emilychandler on 11/14/17.
@@ -34,15 +37,25 @@ public class GetPeopleTask extends AsyncTask<String, Integer, PersonResult> {
 
     protected void onPostExecute(PersonResult result) {
         Model m = Model.getInstance();
-        m.setMypeople(result.getData());
+        Person currPerson = getCurrPerson(result.getData());
+        Map<String,Person> peopleMap = fillPeople(result.getData());
 
-        String name = getCurrPerson(result.getData());
-        Toast.makeText(context, name, Toast.LENGTH_SHORT).show();
+        m.setPeople(peopleMap);
+        m.setMypeople(result.getData());
+        m.setCurrPerson(currPerson);
     }
 
-    private String getCurrPerson(ArrayList<Person> myPeople) {
+    private Map<String,Person> fillPeople (List<Person> people) {
+        Map<String, Person> personMap = new HashMap<String,Person>();
+        for(int i = 0; i < people.size(); i++) {
+            Person curr = people.get(i);
+            personMap.put(curr.getPersonId(),curr);
+        }
+        return personMap;
+    }
+
+    private Person getCurrPerson(ArrayList<Person> myPeople) {
         Person myPerson = myPeople.get(myPeople.size() - 1);
-        String name = myPerson.getFirstName() + " " + myPerson.getLastName();
-        return name;
+        return myPerson;
     }
 }

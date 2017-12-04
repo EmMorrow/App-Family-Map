@@ -1,5 +1,27 @@
 <resources>
-    <string name="app_name">Family-Map</string>
+    <string name="app_name">Family Map</string>
     <string name="hint_server_host">Server Host</string>
     <string name="text_size">16sp</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="life_story_lines">Life Story Lines</string>
+    <string name="life_story_lines_sub">SHOW LIFE STORY LINES</string>
+    <string name="family_tree_lines">Family Tree Lines</string>
+    <string name="family_tree_lines_sub">SHOW TREE LINES</string>
+    <string name="spouse_lines">Spouse Lines</string>
+    <string name="spouse_lines_sub">SHOW SPOUSE LINES</string>
+    <string name="map_type">Map Type</string>
+    <string name="map_type_sub">BACKGROUND DISPLAY ON MAP</string>
+    <string name="sync_data">Re-sync Data</string>
+    <string name="logout">Logout</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="gender">Gender</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="host_id">Server Host</string>
+    <string name="port_id">Server Port</string>
+    <string name="sign_in">Sign In</string>
+    <string name="register">Register</string>
+    <string name="sign_in_text">Already have an account? Sign in</string>
+    <string name="register_text">No account yet? Create one</string>
 </resources>

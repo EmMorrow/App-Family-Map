@@ -2,6 +2,7 @@ package com.example.emilychandler.family_map.client;
 
 import android.util.Log;
 
+import com.example.emilychandler.family_map.data.EventResult;
 import com.example.emilychandler.family_map.data.LoginRequest;
 import com.example.emilychandler.family_map.data.LoginResult;
 import com.example.emilychandler.family_map.data.Person;
@@ -79,41 +80,19 @@ public class ServerProxy {
         return null;
     }
 
-    public void getEvents(String auth) {
+    public EventResult getEvents(String auth) {
         try {
-            URL url = new URL("http://" + serverHost + ":" + serverPort + "person");
-            HttpURLConnection http = (HttpURLConnection)url.openConnection();
-            http.setRequestMethod("GET");
-            http.setDoOutput(true);
-            http.addRequestProperty("Authorization", auth);
-            http.addRequestProperty("Accept","application/json");
-            http.connect();
-            //Convert java object to json string
-            String reqData = "{\"route\": \"atlanta-miami\"}";
-            OutputStream reqBody = http.getOutputStream();
-            reqBody.close();
+            URL url = new URL("http://" + serverHost + ":" + serverPort + "/event");
 
-            if (http.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                System.out.println("Login Successful");
-                InputStream responseBody = http.getInputStream();
+            String response = send(null, "GET", auth, url);
 
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                byte[] buffer = new byte[1024];
-                int length = 0;
-                while ((length = responseBody.read(buffer)) != -1) {
-                    baos.write(buffer, 0, length);
-                }
-
-                String responseBodyData = baos.toString();
-                //return responseBodyData;
-            }
-            else {
-                System.out.println("error");
-            }
+            Gson gson = new Gson();
+            return gson.fromJson(response, EventResult.class);
         }
         catch(IOException e) {
             Log.e("HttpClient",e.getMessage(),e);
         }
+        return null;
     }
 
     private String send(String body, String method, String header, URL url){

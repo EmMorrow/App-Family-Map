@@ -13,15 +13,11 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 
 import com.example.emilychandler.family_map.R;
-import com.example.emilychandler.family_map.client.GetPeopleTask;
-import com.example.emilychandler.family_map.client.LoginTask;
 import com.example.emilychandler.family_map.client.RegisterTask;
-import com.example.emilychandler.family_map.data.LoginRequest;
-import com.example.emilychandler.family_map.data.Model;
 import com.example.emilychandler.family_map.data.User;
 
 
-public class RegisterFragment extends Fragment implements View.OnClickListener{
+public class RegisterFragment extends Fragment implements View.OnClickListener,RegisterTask.onPostExecuteListener{
     private Button register,signin;
     private EditText serverHost, serverPort, username, password, firstName, lastName, email;
     private RadioGroup gender;
@@ -29,7 +25,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.register_fragment,container,false);
+        View v = inflater.inflate(R.layout.fragment_register,container,false);
         username = (EditText)v.findViewById(R.id.username);
         password = (EditText)v.findViewById(R.id.password);
         serverPort = (EditText)v.findViewById(R.id.server_port);
@@ -37,6 +33,13 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
         firstName = (EditText)v.findViewById(R.id.first_name);
         lastName = (EditText)v.findViewById(R.id.last_name);
         email = (EditText)v.findViewById(R.id.email);
+
+        username.setText("emily");
+        password.setText("emily");
+        serverPort.setText("5050");
+        firstName.setText("Emily");
+        lastName.setText("Morrow");
+        email.setText("emily@gmail.com");
 
         signin = (Button)v.findViewById(R.id.sign_in);
         register = (Button)v.findViewById(R.id.register);
@@ -61,6 +64,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
 
     public void onRegister() {
         RegisterTask register = new RegisterTask(getActivity(), serverHost.getText().toString(), serverPort.getText().toString());
+        register.setOnPostExecuteListener(this);
         User request = new User();
         request.setLastName(lastName.getText().toString());
         request.setFirstName(firstName.getText().toString());
@@ -87,6 +91,17 @@ public class RegisterFragment extends Fragment implements View.OnClickListener{
             case R.id.register:
                 onRegister();
                 break;
+        }
+    }
+
+    @Override
+    public void onPostExecute(String result) {
+        if (result.equals("successful")) {
+            MapFragment r = new MapFragment();
+            FragmentManager fm = getFragmentManager();
+            FragmentTransaction transaction = fm.beginTransaction();
+            transaction.replace(R.id.contentFragment, r);
+            transaction.commit();
         }
     }
 }
