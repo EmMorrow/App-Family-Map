@@ -73,10 +73,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener,R
         request.setPassword(password.getText().toString());
         request.setGender(genderS);
         register.execute(request);
-
-//        GetPeopleTask getPeople = new GetPeopleTask(getActivity(), serverHost.getText().toString(), serverPort.getText().toString());
-//        getPeople.execute(Model.getInstance().getAuthToken());
-    }
+ }
 
     @Override
     public void onClick(View v) {

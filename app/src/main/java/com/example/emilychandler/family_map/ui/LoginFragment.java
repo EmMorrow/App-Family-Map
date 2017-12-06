@@ -31,7 +31,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Log
         username.setText("emily");
         password.setText("emily");
         serverPort.setText("5050");
-//        serverHost.setText("10.37.66.23"); // school
+//        serverHost.setText("10.37.66.23"); // cs school
+//        serverHost.setText("10.14.176.208"); // byu wifi
         serverHost.setText("192.168.1.154"); // home
 
         signin = (Button)v.findViewById(R.id.sign_in);

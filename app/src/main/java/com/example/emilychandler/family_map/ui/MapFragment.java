@@ -1,8 +1,13 @@
 package com.example.emilychandler.family_map.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -23,6 +28,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.joanzapata.iconify.IconDrawable;
+import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 import com.joanzapata.iconify.widget.IconTextView;
 
 import java.util.ArrayList;
@@ -42,19 +49,69 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private Settings settings;
     private Polyline spouseLine;
 
+    private TextView linkToPerson;
+
     private List<Polyline> polylines = new ArrayList<>();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater,container,savedInstanceState);
 
         View v = inflater.inflate(R.layout.fragment_map,container,false);
+        linkToPerson = (TextView) v.findViewById(R.id.name);
         mapView = (MapView)v.findViewById(R.id.mapview);
         mapView.onCreate(savedInstanceState);
         mapView.onResume();
 
+        linkToPerson.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), PersonActivity.class);
+                startActivity(intent);
+            }
+        });
+
         mapView.getMapAsync(this);
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.fragment_map, menu);
+        menu.findItem(R.id.filter).setIcon(
+                new IconDrawable(getActivity(), FontAwesomeIcons.fa_filter)
+                .actionBarSize()
+                .color(Color.WHITE));
+        menu.findItem(R.id.search).setIcon(
+                new IconDrawable(getActivity(), FontAwesomeIcons.fa_search)
+                        .actionBarSize()
+                        .color(Color.WHITE));
+        menu.findItem(R.id.settings).setIcon(
+                new IconDrawable(getActivity(), FontAwesomeIcons.fa_gear)
+                        .actionBarSize()
+                        .color(Color.WHITE));
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.filter :
+                break;
+            case R.id.search :
+                break;
+            case R.id.settings :
+                break;
+            default :
+                return super.onOptionsItemSelected(menuItem);
+        }
+        return true;
     }
 
     @Override
