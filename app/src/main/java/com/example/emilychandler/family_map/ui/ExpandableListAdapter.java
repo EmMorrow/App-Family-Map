@@ -123,7 +123,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
 
-        return convertView;
+        return convertView; //yeah
     }
 
     @Override
