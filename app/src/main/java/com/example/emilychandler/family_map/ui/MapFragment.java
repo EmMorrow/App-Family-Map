@@ -38,6 +38,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
+
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_AZURE;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_BLUE;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_CYAN;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_GREEN;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_MAGENTA;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_RED;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_ROSE;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_VIOLET;
 
 
 /**
@@ -54,6 +64,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private TextView linkToPerson;
 
     private Person currPerson;
+
+    private Map<String,Float> eventColors = null;
 
     private List<Polyline> polylines = new ArrayList<>();
     @Override
@@ -126,21 +138,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap){
         settings = Model.getInstance().getSettings();
         myMap = googleMap;
-
-        switch (settings.getMapType()){
-            case NORMAL:
-                googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                break;
-            case TERRAIN:
-                googleMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-                break;
-            case SATELLITE:
-                googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-                break;
-            case HYBRID:
-                googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-                break;
-        }
+//        myMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        myMap.setMapType(settings.getMapType());
 
         addMarkers(myMap);
 
@@ -151,37 +150,31 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                 Event event = (Event) marker.getTag();
                 currPerson = Model.getInstance().getPeople().get(event.getPerson());
                 displayEvent(event);
-                drawLifeStoryLines(event);
-                if (settings.getSpouseLines() != null) drawSpouseLines(event);
-                if (settings.getFamilyTreeLines() != null) drawFamilyTreeLines(event);
-                if (settings.getLifeStoryLines() != null) drawLifeStoryLines(event);
+                if (settings.isShowSpouseLines()) drawSpouseLines(event);
+                if (settings.isShowFamilyTreeLines()) drawFamilyTreeLines(event);
+                if (settings.isShowLifeStoryLines()) drawLifeStoryLines(event);
                 return false;
             }
         });
     }
 
     private void addMarkers(GoogleMap myMap) {
-        ArrayList<Event> myEvents = Model.getInstance().getMyevents();
-        for (int i = 0; i < myEvents.size(); i++) {
-            Event myEvent = myEvents.get(i);
+        Map<String,Event> myEvents = Model.getInstance().getEvents();
+        if (eventColors == null) eventColors = new HashMap<>();
+        Stack<Float> colors = getColorStack();
+
+        for (Event myEvent : myEvents.values()) {
             LatLng location = new LatLng(myEvent.getLatitude(), myEvent.getLongitude());
 
-            Marker myMarker = null;
-            if (myEvent.getEventType().equals("birth")) {
-                myMarker = myMap.addMarker(new MarkerOptions()
-                        .position(location)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+            Float eventColor = eventColors.get(myEvent.getEventType());
+            if (eventColor == null) {
+                eventColor = colors.pop();
+                eventColors.put(myEvent.getEventType(), eventColor);
             }
-            else if (myEvent.getEventType().equals("marriage")) {
-                myMarker = myMap.addMarker(new MarkerOptions()
-                        .position(location)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
-            }
-            else if (myEvent.getEventType().equals("death")) {
-                myMarker = myMap.addMarker(new MarkerOptions()
-                        .position(location)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
-            }
+
+            Marker myMarker = myMap.addMarker(new MarkerOptions()
+                    .position(location)
+                    .icon(BitmapDescriptorFactory.defaultMarker(eventColor)));
             myMarker.setTag(myEvent);
         }
     }
@@ -231,7 +224,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             spouseLine = myMap.addPolyline(new PolylineOptions()
                     .add(new LatLng(event.getLatitude(), event.getLongitude()), new LatLng(spouseBirth.getLatitude(), spouseBirth.getLongitude()))
                     .width(9)
-                    .color(Color.BLUE));
+                    .color(settings.getSpouseLines()));
 
             polylines.add(spouseLine);
 
@@ -264,14 +257,14 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             Polyline bLine = myMap.addPolyline(new PolylineOptions()
                     .add(new LatLng(birth.getLatitude(), birth.getLongitude()), new LatLng(marriage.getLatitude(), marriage.getLongitude()))
                     .width(5)
-                    .color(Color.BLUE));
+                    .color(settings.getLifeStoryLines()));
             polylines.add(bLine);
 
             if (death != null) {
                 Polyline mLine = myMap.addPolyline(new PolylineOptions()
                         .add(new LatLng(marriage.getLatitude(), marriage.getLongitude()), new LatLng(death.getLatitude(), death.getLongitude()))
                         .width(5)
-                        .color(Color.BLUE));
+                        .color(settings.getLifeStoryLines()));
                 polylines.add(mLine);
             }
         }
@@ -283,12 +276,12 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         Polyline mLine = myMap.addPolyline(new PolylineOptions()
                 .add(new LatLng(currEvent.getLatitude(), currEvent.getLongitude()), new LatLng(mEvent.getLatitude(), mEvent.getLongitude()))
                 .width(lineWidth)
-                .color(Color.BLACK));
+                .color(settings.getFamilyTreeLines()));
 
         Polyline fLine = myMap.addPolyline(new PolylineOptions()
                 .add(new LatLng(currEvent.getLatitude(), currEvent.getLongitude()), new LatLng(fEvent.getLatitude(), fEvent.getLongitude()))
                 .width(lineWidth)
-                .color(Color.BLACK));
+                .color(settings.getFamilyTreeLines()));
 
         polylines.add(mLine);
         polylines.add(fLine);
@@ -330,5 +323,18 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             polylines.get(i).remove();
         }
         polylines.clear();
+    }
+
+    private Stack<Float> getColorStack() {
+        Stack<Float> colors = new Stack<>();
+        colors.push(HUE_BLUE);
+        colors.push(HUE_CYAN);
+        colors.push(HUE_GREEN);
+        colors.push(HUE_MAGENTA);
+        colors.push(HUE_RED);
+        colors.push(HUE_AZURE);
+        colors.push(HUE_ROSE);
+        colors.push(HUE_VIOLET);
+        return colors;
     }
 }

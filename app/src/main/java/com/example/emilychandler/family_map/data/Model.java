@@ -1,6 +1,8 @@
 package com.example.emilychandler.family_map.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +54,13 @@ public class Model {
     }
 
     public Map<String, List<Event>> getPersonEvents() {
+        Comparator<Event> comp = new Comparator<Event>() {
+            @Override
+            public int compare(Event o1, Event o2) {
+                return o1.getYear().compareTo(o2.getYear());
+            }
+        };
+
         if (personEvents == null) {
             Map<String, Event> events = Model.getInstance().getEvents();
             Map<String, List<Event>> personEvents = new HashMap<>();
@@ -60,19 +69,14 @@ public class Model {
             if (events != null) {
                 for (Event event : events.values()) {
                     currEvents = personEvents.get(event.getPerson());
+                    if (currEvents!= null) Collections.sort(currEvents, comp);
 
                     if (currEvents == null) {
                         currEvents = new ArrayList<>();
                         personEvents.put(event.getPerson(), currEvents);
                     }
-                    if (currEvents.size() == 0) currEvents.add(event);
-                    else if (event.getEventType().equals("birth")) currEvents.add(0, event);
-                    else if (event.getEventType().equals("marriage")) currEvents.add(1, event);
-                    else if (event.getEventType().equals("death") && currEvents.size() == 2)
-                        currEvents.add(event);
-                    else currEvents.add(event);
+                    currEvents.add(event);
                 }
-
                 Model.getInstance().setPersonEvents(personEvents);
             }
         }
