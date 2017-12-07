@@ -1,6 +1,7 @@
 package com.example.emilychandler.family_map.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,30 @@ public class Model {
     }
 
     public Map<String, List<Event>> getPersonEvents() {
+        if (personEvents == null) {
+            Map<String, Event> events = Model.getInstance().getEvents();
+            Map<String, List<Event>> personEvents = new HashMap<>();
+
+            List<Event> currEvents;
+            if (events != null) {
+                for (Event event : events.values()) {
+                    currEvents = personEvents.get(event.getPerson());
+
+                    if (currEvents == null) {
+                        currEvents = new ArrayList<>();
+                        personEvents.put(event.getPerson(), currEvents);
+                    }
+                    if (currEvents.size() == 0) currEvents.add(event);
+                    else if (event.getEventType().equals("birth")) currEvents.add(0, event);
+                    else if (event.getEventType().equals("marriage")) currEvents.add(1, event);
+                    else if (event.getEventType().equals("death") && currEvents.size() == 2)
+                        currEvents.add(event);
+                    else currEvents.add(event);
+                }
+
+                Model.getInstance().setPersonEvents(personEvents);
+            }
+        }
         return personEvents;
     }
 
@@ -96,5 +121,24 @@ public class Model {
 
     public void setAuthToken(String authToken) {
         this.authToken = authToken;
+    }
+
+    public List<Person> getPersonFamily(Person person) {
+        List<Person> family = new ArrayList<>();
+
+        Person mother = people.get(person.getMother());
+        Person father = people.get(person.getFather());
+        if (mother != null && father != null) {
+            family.add(mother);
+            family.add(father);
+        }
+
+        for (Person currPerson : people.values()) {
+            if (currPerson.getMother() == null || currPerson.getFather() == null) continue;
+            if (currPerson.getMother().equals(person.getPersonId()) || currPerson.getFather().equals(person.getPersonId())) {
+                family.add(currPerson);
+            }
+        }
+        return family;
     }
 }

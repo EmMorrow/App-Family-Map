@@ -24,4 +24,14 @@
     <string name="register">Register</string>
     <string name="sign_in_text">Already have an account? Sign in</string>
     <string name="register_text">No account yet? Create one</string>
+    
+    <string-array name="colors_array">
+        <item>Black</item>
+        <item>Blue</item>
+        <item>Cyan</item>
+        <item>Green</item>
+        <item>Magenta</item>
+        <item>Red</item>
+        <item>Yellow</item>
+    </string-array>
 </resources>

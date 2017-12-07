@@ -9,7 +9,7 @@
         android:id="@+id/first_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
+        android:textSize="17dp"
         android:text="Sidney" />
     <TextView
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
         android:id="@+id/last_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
+        android:textSize="17dp"
         android:text="Simion"/>
     <TextView
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
         android:id="@+id/gender"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
+        android:textSize="17dp"
         android:text="Male"/>
     <TextView
         android:layout_width="match_parent"
@@ -47,4 +47,10 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@android:color/darker_gray"/>
+
+    <ExpandableListView
+        android:id="@+id/lvExp"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
+
 </LinearLayout>

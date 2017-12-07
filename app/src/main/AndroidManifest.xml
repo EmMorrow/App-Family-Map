@@ -25,12 +25,35 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".ui.PersonActivity">
             <intent-filter>
             <action android:name="com.example.emily.ui.PersonActivity" />
             <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.SettingsActivity">
+            <intent-filter>
+                <action android:name="com.example.emily.ui.SettingsActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.FilterActivity">
+            <intent-filter>
+                <action android:name="com.example.emily.ui.FilterActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.SearchActivity">
+            <intent-filter>
+                <action android:name="com.example.emily.ui.SearchActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -46,9 +69,7 @@
             />
         <!--android:value="@string/google_maps_key" -->
 
-        <activity
-            android:name=".ui.MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+
     </application>
 
 </manifest>

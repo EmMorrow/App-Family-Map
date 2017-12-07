@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="10dp">
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent" android:layout_height="50dp"
+        android:layout_width="match_parent" android:layout_height="45dp"
         android:id="@+id/lifeStoryLines">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/life_story_lines"
-            android:textSize="25sp"
+            android:textSize="22dp"
             android:layout_alignParentTop="true"/>
         <TextView
             android:layout_width="wrap_content"
@@ -28,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/lifeStoryLinesSpinner"
+            android:entries="@array/colors_array"
             android:layout_toLeftOf="@+id/lifeStoryLinesSwitch"/>
         <View android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -35,13 +37,13 @@
             android:background="@android:color/darker_gray"/>
     </RelativeLayout>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent" android:layout_height="50dp"
+        android:layout_width="match_parent" android:layout_height="45dp"
         android:id="@+id/familyTreeLines">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/family_tree_lines"
-            android:textSize="25sp"
+            android:textSize="22dp"
             android:layout_alignParentTop="true"/>
         <TextView
             android:layout_width="wrap_content"
@@ -57,6 +59,7 @@
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:entries="@array/colors_array"
             android:id="@+id/familyTreeLinesSpinner"
             android:layout_toLeftOf="@+id/familyTreeLinesSwitch"/>
         <View android:layout_width="match_parent"
@@ -65,13 +68,13 @@
             android:background="@android:color/darker_gray"/>
     </RelativeLayout>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent" android:layout_height="50dp"
+        android:layout_width="match_parent" android:layout_height="45dp"
         android:id="@+id/spouseLines">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/spouse_lines"
-            android:textSize="25sp"
+            android:textSize="22dp"
             android:layout_alignParentTop="true"/>
         <TextView
             android:layout_width="wrap_content"
@@ -88,6 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/spouseLinesSpinner"
+            android:entries="@array/colors_array"
             android:layout_toLeftOf="@+id/spouseLinesSwitch"/>
         <View android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -95,13 +99,13 @@
             android:background="@android:color/darker_gray"/>
     </RelativeLayout>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent" android:layout_height="50dp"
+        android:layout_width="match_parent" android:layout_height="45dp"
         android:id="@+id/mapType">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/map_type"
-            android:textSize="25sp"
+            android:textSize="22dp"
             android:layout_alignParentTop="true"/>
         <TextView
             android:layout_width="wrap_content"
@@ -113,6 +117,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/mapTypeSpinner"
+            android:entries="@array/colors_array"
             android:layout_alignParentRight="true"/>
         <View android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -120,13 +125,13 @@
             android:background="@android:color/darker_gray"/>
     </RelativeLayout>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent" android:layout_height="50dp"
+        android:layout_width="match_parent" android:layout_height="45dp"
         android:id="@+id/resyncData">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sync_data"
-            android:textSize="25sp"
+            android:textSize="22dp"
             android:layout_alignParentTop="true"/>
         <TextView
             android:layout_width="wrap_content"
@@ -140,13 +145,13 @@
             android:background="@android:color/darker_gray"/>
     </RelativeLayout>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent" android:layout_height="50dp"
+        android:layout_width="match_parent" android:layout_height="45dp"
         android:id="@+id/logout">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/logout"
-            android:textSize="25sp"
+            android:textSize="22dp"
             android:layout_alignParentTop="true"/>
 
         <View android:layout_width="match_parent"

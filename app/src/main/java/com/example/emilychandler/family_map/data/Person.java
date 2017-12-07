@@ -1,11 +1,12 @@
 package com.example.emilychandler.family_map.data;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
  * Stores Person information
  */
-public class Person {
+public class Person implements Serializable{
     private String personID;
     private String descendant;
     private String firstName;

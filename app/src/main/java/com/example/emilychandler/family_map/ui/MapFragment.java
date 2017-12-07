@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import java.io.Serializable;
 
 import com.example.emilychandler.family_map.R;
 import com.example.emilychandler.family_map.data.Event;
@@ -32,6 +33,7 @@ import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 import com.joanzapata.iconify.widget.IconTextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +52,8 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private Polyline spouseLine;
 
     private TextView linkToPerson;
+
+    private Person currPerson;
 
     private List<Polyline> polylines = new ArrayList<>();
     @Override
@@ -72,6 +76,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), PersonActivity.class);
+                intent.putExtra("MyPerson", currPerson);
                 startActivity(intent);
             }
         });
@@ -103,10 +108,13 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.filter :
+                startActivity(new Intent(getActivity(), FilterActivity.class));
                 break;
             case R.id.search :
+                startActivity(new Intent(getActivity(), SearchActivity.class));
                 break;
             case R.id.settings :
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
                 break;
             default :
                 return super.onOptionsItemSelected(menuItem);
@@ -116,7 +124,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(GoogleMap googleMap){
-        fillPersonEvents();
         settings = Model.getInstance().getSettings();
         myMap = googleMap;
 
@@ -142,6 +149,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             public boolean onMarkerClick(Marker marker) {
                 clearPolylines();
                 Event event = (Event) marker.getTag();
+                currPerson = Model.getInstance().getPeople().get(event.getPerson());
                 displayEvent(event);
                 drawLifeStoryLines(event);
                 if (settings.getSpouseLines() != null) drawSpouseLines(event);
@@ -308,9 +316,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             Event fFatherBirth = getBirthEvent(personEvents.get(fFather.getPersonId()));
             familyTree(fEvent, fMotherBirth, fFatherBirth, lineWidth-5);
         }
-
-
-
     }
 
     private Event getBirthEvent(List<Event> events) {
@@ -318,25 +323,6 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
             if (events.get(i).getEventType().equals("birth")) return events.get(i);
         }
         return null;
-    }
-
-    private void fillPersonEvents() {
-        Map<String, Event> events = Model.getInstance().getEvents();
-        Map<String, List<Event>> personEvents = new HashMap<>();
-
-        List<Event> currEvents;
-
-        for (Event event : events.values()) {
-            currEvents = personEvents.get(event.getPerson());
-            if (currEvents != null) currEvents.add(event);
-            else {
-                currEvents = new ArrayList<>();
-                currEvents.add(event);
-                personEvents.put(event.getPerson(), currEvents);
-            }
-        }
-
-        Model.getInstance().setPersonEvents(personEvents);
     }
 
     private void clearPolylines() {

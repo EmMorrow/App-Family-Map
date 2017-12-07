@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="1">
+
+    <com.joanzapata.iconify.widget.IconTextView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="{fa-map-marker}"
+        android:gravity="bottom"
+        android:paddingRight="10dp"
+        android:textSize="35dp"/>
+
+    <LinearLayout android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/first_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Medium Text"
+            android:textSize="15dp"/>
+        <TextView
+            android:id="@+id/second_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="TextView"/>
+    </LinearLayout>
+</LinearLayout>
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:layout_width="fill_parent"-->
+    <!--android:layout_height="?android:attr/listPreferredItemHeight"-->
+    <!--android:padding="6dip" >-->
+
+    <!--<com.joanzapata.iconify.widget.IconTextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="fill_parent"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_marginRight="6dip"-->
+        <!--android:id="@+id/icon"-->
+        <!--android:text="{fa-android}"-->
+        <!--android:textSize="40dp"/>-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/second_line"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="26dip"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_toRightOf="@id/icon"-->
+        <!--android:ellipsize="marquee"-->
+        <!--android:maxLines="1"-->
+        <!--android:text="Description"-->
+        <!--android:textSize="10sp" />-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/first_line"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_above="@id/second_line"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignWithParentIfMissing="true"-->
+        <!--android:layout_toRightOf="@id/icon"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:text="Example application"-->
+        <!--android:textSize="12sp" />-->
+
+<!--</RelativeLayout>-->
