@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,9 +36,15 @@ import com.joanzapata.iconify.widget.IconTextView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.Stack;
 
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_AZURE;
@@ -160,11 +167,13 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     private void addMarkers(GoogleMap myMap) {
         Map<String,Event> myEvents = Model.getInstance().getEvents();
+        Set<String> eventTypes = new HashSet<>();
         if (eventColors == null) eventColors = new HashMap<>();
         Stack<Float> colors = getColorStack();
 
         for (Event myEvent : myEvents.values()) {
             LatLng location = new LatLng(myEvent.getLatitude(), myEvent.getLongitude());
+            eventTypes.add(myEvent.getEventType());
 
             Float eventColor = eventColors.get(myEvent.getEventType());
             if (eventColor == null) {
@@ -177,6 +186,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                     .icon(BitmapDescriptorFactory.defaultMarker(eventColor)));
             myMarker.setTag(myEvent);
         }
+        Model.getInstance().setEventTypes(eventTypes);
     }
 
     private void displayEvent(Event currEvent){

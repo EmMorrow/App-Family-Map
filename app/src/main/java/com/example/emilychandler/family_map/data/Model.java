@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by emilychandler on 11/11/17.
@@ -18,6 +19,7 @@ public class Model {
     private Map<String, Person> people;
     private Map<String, Event> events;
     private Map<String, List<Event>> personEvents;
+    private Set<String> eventTypes;
 
     private String authToken;
     private Person currPerson;
@@ -35,6 +37,14 @@ public class Model {
             instance = new Model();
         }
         return instance;
+    }
+
+    public Set<String> getEventTypes() {
+        return eventTypes;
+    }
+
+    public void setEventTypes(Set<String> eventTypes) {
+        this.eventTypes = eventTypes;
     }
 
     public Settings getSettings() {
