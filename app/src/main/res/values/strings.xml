@@ -25,6 +25,17 @@
     <string name="sign_in_text">Already have an account? Sign in</string>
     <string name="register_text">No account yet? Create one</string>
     
+    <string name="fside">Father\'s Side</string>
+    <string name="mside">Mother\'s Side</string>
+    <string name="fside_filter">Filter By Father\'s side of family</string>
+    <string name="mside_filter">Filter By Mother\'s side of family</string>
+
+    <string name="fevent">Female Events</string>
+    <string name="mevent">Male Events</string>
+    <string name="fevent_filter">Filter By Female Events</string>
+    <string name="mevent_filter">Filter By Male Events</string>
+    
+    
     <string-array name="colors_array">
         <item>Black</item>
         <item>Blue</item>

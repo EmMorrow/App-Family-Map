@@ -31,7 +31,10 @@ public class ListAdapter extends ArrayAdapter {
         TextView eventText = (TextView) rowView.findViewById(R.id.event_text);
         TextView description = (TextView) rowView.findViewById(R.id.description);
 
-        eventText.setText(eventTypes[position] + " Events");
+        String event = eventTypes[position];
+        event = event.substring(0, 1).toUpperCase() + event.substring(1);
+
+        eventText.setText(event + " Events");
         description.setText("FILTER BY " + eventTypes[position] + " EVENTS");
         return rowView;
     }

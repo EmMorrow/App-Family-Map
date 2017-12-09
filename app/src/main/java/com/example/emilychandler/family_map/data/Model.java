@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +24,7 @@ public class Model {
 
     private String authToken;
     private Person currPerson;
+    private Person rootPerson;
 
     private Settings settings;
     private Filter filter;
@@ -155,4 +157,50 @@ public class Model {
         }
         return family;
     }
+
+    public Map<String,Event> getFathersSide() {
+        Map<String,Event> myEvents = new HashMap<>();
+        getSide(myEvents,people.get(rootPerson.getFather()));
+        return myEvents;
+    }
+
+    public Map<String,Event> getMothersSide() {
+        Map<String,Event> myEvents = new HashMap<>();
+        getSide(myEvents,people.get(rootPerson.getMother()));
+        return myEvents;
+    }
+
+    public void getSide(Map<String,Event> myEvents, Person ancestor) {
+        List<Event> ancestorEvents = personEvents.get(ancestor.getPersonId());
+
+        for (int i = 0; i < ancestorEvents.size(); i++) {
+            Event event = ancestorEvents.get(i);
+            myEvents.put(event.getEventId(), event);
+        }
+        getSide(myEvents,people.get(ancestor.getFather()));
+        getSide(myEvents,people.get(ancestor.getMother()));
+    }
+
+    public Map<String,Event> getMaleEvents() {
+        Map<String,Event> maleEvents = new HashMap<>();
+
+       for(Event event : events.values()){
+           if(people.get(event.getPerson()).getGender().equals("m")){
+               maleEvents.put(event.getEventId(), event);
+           }
+       }
+        return maleEvents;
+    }
+
+    public Map<String,Event> getFemaleEvents(Person person) {
+        Map<String,Event> femaleEvents = new HashMap<>();
+
+        for(Event event : events.values()){
+            if(people.get(event.getPerson()).getGender().equals("m")){
+                femaleEvents.put(event.getEventId(), event);
+            }
+        }
+        return femaleEvents;
+    }
+
 }
