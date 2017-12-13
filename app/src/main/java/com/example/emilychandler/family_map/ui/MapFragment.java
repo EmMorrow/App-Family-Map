@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,15 +17,20 @@ import java.io.Serializable;
 
 import com.example.emilychandler.family_map.R;
 import com.example.emilychandler.family_map.data.Event;
+import com.example.emilychandler.family_map.data.Filter;
 import com.example.emilychandler.family_map.data.Model;
 import com.example.emilychandler.family_map.data.Person;
 import com.example.emilychandler.family_map.data.Settings;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -34,19 +40,21 @@ import com.joanzapata.iconify.IconDrawable;
 import com.joanzapata.iconify.fonts.FontAwesomeIcons;
 import com.joanzapata.iconify.widget.IconTextView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.Stack;
 
+import static com.example.emilychandler.family_map.data.Settings.MapType.NORMAL;
+import static com.example.emilychandler.family_map.data.Settings.MapType.SATELLITE;
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_HYBRID;
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_SATELLITE;
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_AZURE;
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_BLUE;
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_CYAN;
@@ -64,21 +72,71 @@ import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_VIOL
 public class MapFragment extends SupportMapFragment implements OnMapReadyCallback{
     private GoogleMap myMap;
     private MapView mapView;
-
     private Settings settings;
     private Polyline spouseLine;
+    private Event currEvent;
+    private boolean firstCall = true;
 
+    private Filter filter;
     private TextView linkToPerson;
-
     private Person currPerson;
-
+    private Map<String, Event> myEvents;
     private Map<String,Float> eventColors = null;
-
     private List<Polyline> polylines = new ArrayList<>();
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (currPerson == null) {
+
+            super.onCreateOptionsMenu(menu, inflater);
+            inflater.inflate(R.menu.fragment_map, menu);
+            menu.findItem(R.id.filter).setIcon(
+                    new IconDrawable(getActivity(), FontAwesomeIcons.fa_filter)
+                            .actionBarSize()
+                            .color(Color.WHITE));
+            menu.findItem(R.id.search).setIcon(
+                    new IconDrawable(getActivity(), FontAwesomeIcons.fa_search)
+                            .actionBarSize()
+                            .color(Color.WHITE));
+            menu.findItem(R.id.settings).setIcon(
+                    new IconDrawable(getActivity(), FontAwesomeIcons.fa_gear)
+                            .actionBarSize()
+                            .color(Color.WHITE));
+        }
+        else System.out.println("RIGHT HERE" + currPerson.getFirstName());
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.filter :
+                startActivity(new Intent(getActivity(), FilterActivity.class));
+                break;
+            case R.id.search :
+                startActivity(new Intent(getActivity(), SearchActivity.class));
+                break;
+            case R.id.settings :
+                startActivity(new Intent(getActivity(), SettingsActivity.class));
+                break;
+            default :
+                return super.onOptionsItemSelected(menuItem);
+        }
+        return true;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        settings = Model.getInstance().getSettings();
+
+        currEvent = null;
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            currEvent =(Event) bundle.get("MyEvent");
+            setHasOptionsMenu(false);
+        }
+        else setHasOptionsMenu(true);
     }
 
     @Override
@@ -105,51 +163,41 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.fragment_map, menu);
-        menu.findItem(R.id.filter).setIcon(
-                new IconDrawable(getActivity(), FontAwesomeIcons.fa_filter)
-                .actionBarSize()
-                .color(Color.WHITE));
-        menu.findItem(R.id.search).setIcon(
-                new IconDrawable(getActivity(), FontAwesomeIcons.fa_search)
-                        .actionBarSize()
-                        .color(Color.WHITE));
-        menu.findItem(R.id.settings).setIcon(
-                new IconDrawable(getActivity(), FontAwesomeIcons.fa_gear)
-                        .actionBarSize()
-                        .color(Color.WHITE));
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.filter :
-                startActivity(new Intent(getActivity(), FilterActivity.class));
-                break;
-            case R.id.search :
-                startActivity(new Intent(getActivity(), SearchActivity.class));
-                break;
-            case R.id.settings :
-                startActivity(new Intent(getActivity(), SettingsActivity.class));
-                break;
-            default :
-                return super.onOptionsItemSelected(menuItem);
-        }
-        return true;
-    }
-
-    @Override
     public void onMapReady(GoogleMap googleMap){
-        settings = Model.getInstance().getSettings();
+
         myMap = googleMap;
 //        myMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        setMaptype();
         myMap.setMapType(settings.getMapType());
+//        Model.getInstance().setEventTypes();
+        Model.getInstance().setEventTypes();
+        filter = Model.getInstance().getFilter();
 
         addMarkers(myMap);
 
+        if(currEvent != null) {
+            displayEvent(currEvent);
+            centerMap(currEvent);
+        }
+
+
+        setMarkerListener();
+
+    }
+
+    @Override
+    public void onResume() {
+        mapView.onResume();
+        setMaptype();
+        if (!firstCall) {
+            myMap.clear();
+            addMarkers(myMap);
+        }
+        firstCall = false;
+        super.onResume();
+    }
+
+    private void setMarkerListener() {
         myMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -165,28 +213,82 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
         });
     }
 
+    private Map<String, Event> getFilterEvents() {
+        myEvents = new HashMap<>();
+        if (filter.isFathersSide()) {
+            Map<String, Event> fathersSide = Model.getInstance().getFathersSide();
+            myEvents = addToMap(fathersSide,myEvents);
+        }
+
+        if (filter.isMothersSide()) {
+            Map<String, Event> mothersSide = Model.getInstance().getMothersSide();
+            myEvents = addToMap(mothersSide,myEvents);
+        }
+
+        if (filter.isFemaleEvents()) {
+            Map<String, Event> femaleEvents = Model.getInstance().getFemaleEvents();
+            myEvents = addToMap(femaleEvents,myEvents);
+        }
+
+        if(filter.isMaleEvents()) {
+            Map<String, Event> maleEvents = Model.getInstance().getMaleEvents();
+            myEvents = addToMap(maleEvents,myEvents);
+        }
+
+        for (String eventType: Model.getInstance().getFilter().getFEventTypes()) {
+            System.out.println("Before " + myEvents.size());
+            Map<String, Event> typeEvents = Model.getInstance().getEventTypeEvents(eventType);
+            myEvents = addToMap(typeEvents,myEvents);
+            System.out.println("After " + myEvents.size());
+        }
+        return myEvents;
+    }
+
+    private Map<String,Event> addToMap(Map<String,Event> originalMap, Map<String,Event> newMap) {
+        if (originalMap == null) return null;
+        for (Map.Entry<String, Event> entry : originalMap.entrySet()) {
+            String key = entry.getKey();
+            Event value = entry.getValue();
+
+            newMap.put(key,value);
+        }
+        return newMap;
+    }
+
     private void addMarkers(GoogleMap myMap) {
-        Map<String,Event> myEvents = Model.getInstance().getEvents();
+        myEvents = getFilterEvents();
+
         Set<String> eventTypes = new HashSet<>();
-        if (eventColors == null) eventColors = new HashMap<>();
+        eventColors = settings.getEventColors();
+
+        if (settings.getEventColors() == null) eventColors = new HashMap<>();
         Stack<Float> colors = getColorStack();
 
         for (Event myEvent : myEvents.values()) {
+            String eventType = myEvent.getEventType().toLowerCase();
             LatLng location = new LatLng(myEvent.getLatitude(), myEvent.getLongitude());
-            eventTypes.add(myEvent.getEventType());
+            eventTypes.add(eventType);
 
-            Float eventColor = eventColors.get(myEvent.getEventType());
+            Float eventColor = eventColors.get(eventType);
             if (eventColor == null) {
                 eventColor = colors.pop();
-                eventColors.put(myEvent.getEventType(), eventColor);
+                eventColors.put(eventType, eventColor);
             }
 
-            Marker myMarker = myMap.addMarker(new MarkerOptions()
-                    .position(location)
-                    .icon(BitmapDescriptorFactory.defaultMarker(eventColor)));
-            myMarker.setTag(myEvent);
+            addMarker(location, eventColor, myEvent);
         }
-        Model.getInstance().setEventTypes(eventTypes);
+
+//        Model.getInstance().setEventTypes(eventTypes);
+
+        settings.setEventColors(eventColors);
+        Model.getInstance().setSettings(settings); // What is this
+    }
+
+    private void addMarker(LatLng location, Float eventColor, Event myEvent) {
+        Marker myMarker = myMap.addMarker(new MarkerOptions()
+                .position(location)
+                .icon(BitmapDescriptorFactory.defaultMarker(eventColor)));
+        myMarker.setTag(myEvent);
     }
 
     private void displayEvent(Event currEvent){
@@ -217,6 +319,38 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
 
     }
 
+    private void setMaptype() {
+        if(settings == null) return;
+        if (myMap == null) return;
+
+        switch (settings.getMapType()){
+            case MAP_TYPE_NORMAL:
+                myMap.setMapType(MAP_TYPE_NORMAL);
+                break;
+            case MAP_TYPE_HYBRID:
+                myMap.setMapType(MAP_TYPE_HYBRID);
+                break;
+            case MAP_TYPE_SATELLITE:
+                myMap.setMapType(MAP_TYPE_SATELLITE);
+                break;
+            case MAP_TYPE_TERRAIN:
+                myMap.setMapType(MAP_TYPE_TERRAIN);
+                break;
+        }
+    }
+
+    private void centerMap(Event event) {
+        LatLng eventLocation = new LatLng(event.getLatitude(),event.getLongitude());
+        CameraUpdate update = CameraUpdateFactory.newLatLng(eventLocation);
+        myMap.moveCamera(update);
+        zoomMap(10);
+    }
+
+    private void zoomMap(float amount) {
+        CameraUpdate update = CameraUpdateFactory.zoomTo(amount);
+        myMap.moveCamera(update);
+    }
+
     private void drawSpouseLines(Event event) {
         Map<String,Person> people = Model.getInstance().getPeople();
         Map<String, List<Event>> personEvents = Model.getInstance().getPersonEvents();
@@ -237,10 +371,7 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
                     .color(settings.getSpouseLines()));
 
             polylines.add(spouseLine);
-
         }
-
-
     }
 
     private void drawFamilyTreeLines(Event event) {
@@ -257,44 +388,40 @@ public class MapFragment extends SupportMapFragment implements OnMapReadyCallbac
     private void drawLifeStoryLines(Event event) {
         List<Event> currEvents = Model.getInstance().getPersonEvents().get(event.getPerson());
 
-        Event birth = null, marriage = null, death = null;
         for (int i = 0; i < currEvents.size(); i++) {
-            if (currEvents.get(i).getEventType().equals("birth")) birth = currEvents.get(i);
-            else if(currEvents.get(i).getEventType().equals("marriage")) marriage = currEvents.get(i);
-            else if(currEvents.get(i).getEventType().equals("death")) death = currEvents.get(i);
-        }
-        if (marriage != null) {
-            Polyline bLine = myMap.addPolyline(new PolylineOptions()
-                    .add(new LatLng(birth.getLatitude(), birth.getLongitude()), new LatLng(marriage.getLatitude(), marriage.getLongitude()))
-                    .width(5)
-                    .color(settings.getLifeStoryLines()));
-            polylines.add(bLine);
+            Event event1 = currEvents.get(i);
+            Event event2 = null;
+            if (currEvents.size() > i+1) event2 = currEvents.get(i+1);
 
-            if (death != null) {
-                Polyline mLine = myMap.addPolyline(new PolylineOptions()
-                        .add(new LatLng(marriage.getLatitude(), marriage.getLongitude()), new LatLng(death.getLatitude(), death.getLongitude()))
+            if (event2 != null) {
+                Polyline bLine = myMap.addPolyline(new PolylineOptions()
+                        .add(new LatLng(event1.getLatitude(), event1.getLongitude()), new LatLng(event2.getLatitude(), event2.getLongitude()))
                         .width(5)
                         .color(settings.getLifeStoryLines()));
-                polylines.add(mLine);
+                polylines.add(bLine);
             }
         }
     }
 
     private void familyTree (Event currEvent, Event mEvent, Event fEvent, int lineWidth) {
         if (mEvent == null || fEvent == null) return;
+        if (myEvents.get(currEvent.getEventId()) == null) return;
 
-        Polyline mLine = myMap.addPolyline(new PolylineOptions()
-                .add(new LatLng(currEvent.getLatitude(), currEvent.getLongitude()), new LatLng(mEvent.getLatitude(), mEvent.getLongitude()))
-                .width(lineWidth)
-                .color(settings.getFamilyTreeLines()));
+        if (myEvents.get(mEvent.getEventId()) != null) {
+            Polyline mLine = myMap.addPolyline(new PolylineOptions()
+                    .add(new LatLng(currEvent.getLatitude(), currEvent.getLongitude()), new LatLng(mEvent.getLatitude(), mEvent.getLongitude()))
+                    .width(lineWidth)
+                    .color(settings.getFamilyTreeLines()));
+            polylines.add(mLine);
+        }
 
-        Polyline fLine = myMap.addPolyline(new PolylineOptions()
-                .add(new LatLng(currEvent.getLatitude(), currEvent.getLongitude()), new LatLng(fEvent.getLatitude(), fEvent.getLongitude()))
-                .width(lineWidth)
-                .color(settings.getFamilyTreeLines()));
-
-        polylines.add(mLine);
-        polylines.add(fLine);
+        if(myEvents.get(fEvent.getEventId()) != null) {
+            Polyline fLine = myMap.addPolyline(new PolylineOptions()
+                    .add(new LatLng(currEvent.getLatitude(), currEvent.getLongitude()), new LatLng(fEvent.getLatitude(), fEvent.getLongitude()))
+                    .width(lineWidth)
+                    .color(settings.getFamilyTreeLines()));
+            polylines.add(fLine);
+        }
 
         Map<String, Person> people = Model.getInstance().getPeople();
         Person mother = people.get(mEvent.getPerson());

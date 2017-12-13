@@ -1,11 +1,12 @@
 package com.example.emilychandler.family_map.data;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
  * Stores Event information
  */
-public class Event {
+public class Event implements Serializable {
     private String eventID;
     private String descendant;
     private String personID;

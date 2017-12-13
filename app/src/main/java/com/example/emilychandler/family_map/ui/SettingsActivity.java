@@ -1,14 +1,19 @@
 package com.example.emilychandler.family_map.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import com.example.emilychandler.family_map.R;
+import com.example.emilychandler.family_map.client.GetEventsTask;
+import com.example.emilychandler.family_map.client.GetPeopleTask;
 import com.example.emilychandler.family_map.data.Model;
 import com.example.emilychandler.family_map.data.Settings;
 
@@ -20,6 +25,9 @@ public class SettingsActivity extends AppCompatActivity {
     Switch lifeStoryLinesSwitch, spouseLinesSwitch, familyTreeLinesSwitch;
     Spinner lifeStoryLinesSpinner, spouseLinesSpinner, familyTreeLinesSpinner, mapTypeSpinner;
     Settings settings;
+    RelativeLayout resync, logout;
+    private boolean peopleTask, eventTask;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +44,9 @@ public class SettingsActivity extends AppCompatActivity {
         familyTreeLinesSpinner = (Spinner) findViewById(R.id.familyTreeLinesSpinner);
         mapTypeSpinner = (Spinner) findViewById(R.id.mapTypeSpinner);
 
+        resync = (RelativeLayout)findViewById(R.id.resyncData);
+        logout = (RelativeLayout)findViewById(R.id.logout);
+
         lifeStoryLinesSpinner.setSelection(0);
         spouseLinesSpinner.setSelection(1);
         familyTreeLinesSpinner.setSelection(2);
@@ -43,6 +54,7 @@ public class SettingsActivity extends AppCompatActivity {
         showPastSettings();
         setSwitchListeners();
         setSpinnerListeners();
+        setLayoutListeners();
     }
 
     private void showPastSettings() {
@@ -50,7 +62,22 @@ public class SettingsActivity extends AppCompatActivity {
         spouseLinesSwitch.setChecked(settings.isShowSpouseLines());
         familyTreeLinesSwitch.setChecked(settings.isShowFamilyTreeLines());
     }
+    private void setLayoutListeners() {
+        resync.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                reloadData();
+            }
+        });
 
+        logout.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                System.out.println("logout");
+                Model.getInstance().reset();
+                startMainActivity();
+
+            }
+        });
+    }
     private void setSwitchListeners() {
         lifeStoryLinesSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -116,6 +143,44 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
+    private void startMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                intent.putExtra("MyPerson", currPerson);
+        startActivity(intent);
+    }
+    
+    private void reloadData() {
+        Model model = Model.getInstance();
+
+        GetPeopleTask getPeople = new GetPeopleTask(this, model.getServerHost(), model.getServerPort());
+        GetEventsTask getEvents = new GetEventsTask(this, model.getServerHost(), model.getServerPort());
+
+        getPeople.setsActivity(this);
+        getEvents.setsActivity(this);
+
+        getPeople.execute(Model.getInstance().getAuthToken());
+        getEvents.execute(Model.getInstance().getAuthToken());
+
+//        startMainActivity();
 
 
+    }
+
+    private void loadMap() {
+        Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+
+//                intent.putExtra("MyPerson", currPerson);
+        startActivity(intent);
+    }
+
+    public void setPeopleTask(boolean peopleTask) {
+        this.peopleTask = peopleTask;
+        if (peopleTask && eventTask) loadMap();
+    }
+
+    public void setEventsTask(boolean eventTask) {
+        this.eventTask = eventTask;
+        if (peopleTask && eventTask) loadMap();
+    }
 }

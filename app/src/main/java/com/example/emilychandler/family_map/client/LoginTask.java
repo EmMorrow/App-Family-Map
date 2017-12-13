@@ -9,6 +9,7 @@ import com.example.emilychandler.family_map.data.LoginRequest;
 import com.example.emilychandler.family_map.data.LoginResult;
 import com.example.emilychandler.family_map.data.Model;
 import com.example.emilychandler.family_map.data.Person;
+import com.example.emilychandler.family_map.ui.LoginFragment;
 import com.example.emilychandler.family_map.ui.MapFragment;
 
 import java.util.ArrayList;
@@ -25,6 +26,8 @@ import static java.security.AccessController.getContext;
 public class LoginTask extends AsyncTask<LoginRequest, Integer, LoginResult>{
     private Context context;
     private String serverHost, serverPort;
+    private LoginFragment lFrag;
+
     private onPostExecuteListener listener = null;
 
     public interface onPostExecuteListener {
@@ -35,10 +38,11 @@ public class LoginTask extends AsyncTask<LoginRequest, Integer, LoginResult>{
         this.listener = listener;
     }
 
-    public LoginTask(Context context, String serverHost, String serverPort) {
+    public LoginTask(Context context, String serverHost, String serverPort, LoginFragment lFrag) {
         this.context = context;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
+        this.lFrag = lFrag;
     }
 
     protected LoginResult doInBackground(LoginRequest... requests) {
@@ -55,9 +59,16 @@ public class LoginTask extends AsyncTask<LoginRequest, Integer, LoginResult>{
         else if (result.getAuthToken() != null) {
             Model m = Model.getInstance();
             m.setAuthToken(result.getAuthToken());
+            m.setServerHost(serverHost);
+            m.setServerPort(serverPort);
 
             GetPeopleTask getPeople = new GetPeopleTask(context, serverHost, serverPort);
             GetEventsTask getEvents = new GetEventsTask(context, serverHost, serverPort);
+
+            getEvents.setFragment(lFrag);
+            getPeople.setFragment(lFrag);
+
+
             getPeople.execute(Model.getInstance().getAuthToken());
             getEvents.execute(Model.getInstance().getAuthToken());
 
@@ -65,6 +76,7 @@ public class LoginTask extends AsyncTask<LoginRequest, Integer, LoginResult>{
                 listener.onPostExecute("successful");
             }
         }
+        lFrag.setLoginTask(true);
     }
 
 

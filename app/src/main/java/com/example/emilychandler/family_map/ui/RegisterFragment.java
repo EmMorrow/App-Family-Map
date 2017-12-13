@@ -25,6 +25,7 @@ public class RegisterFragment extends Fragment implements View.OnClickListener,R
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setHasOptionsMenu(false);
         View v = inflater.inflate(R.layout.fragment_register,container,false);
         username = (EditText)v.findViewById(R.id.username);
         password = (EditText)v.findViewById(R.id.password);

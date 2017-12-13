@@ -24,6 +24,7 @@ public class Settings {
     private boolean showLifeStoryLines, showFamilyTreeLines, showSpouseLines;
     private Map<String, Integer> colors;
     private Map<String, Integer> mapTypes;
+    private Map<String, Float> eventColors;
 //    private Map<String, MapType> mapTypes;
 
     public Settings(){
@@ -34,6 +35,14 @@ public class Settings {
         showFamilyTreeLines = false;
         showSpouseLines = false;
         mapType = GoogleMap.MAP_TYPE_TERRAIN;
+    }
+
+    public Map<String, Float> getEventColors() {
+        return eventColors;
+    }
+
+    public void setEventColors(Map<String, Float> eventColors) {
+        this.eventColors = eventColors;
     }
 
     public boolean isShowLifeStoryLines() {

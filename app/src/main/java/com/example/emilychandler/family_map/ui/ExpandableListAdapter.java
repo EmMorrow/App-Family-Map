@@ -77,11 +77,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 image.setTextColor(Color.BLUE);
             }
 
-            if (_listDataChild.get("Family").size() >= 2) {
-                if (childPosition == 0) secondLine.setText("Mother");
-                else if (childPosition == 1) secondLine.setText("Father");
-                else secondLine.setText("Child");
-            }
+            if (currPerson.getFather().equals(person.getPersonId())) secondLine.setText("Father");
+            else if (currPerson.getMother().equals(person.getPersonId())) secondLine.setText("Mother");
+            else if (currPerson.getSpouse().equals(person.getPersonId())) secondLine.setText("Spouse");
             else secondLine.setText("Child");
         }
         return convertView;
